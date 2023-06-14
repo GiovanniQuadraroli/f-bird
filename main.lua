@@ -77,7 +77,7 @@ function love.update(dt)
     bird:update(dt)
 
     for k, pair in pairs(pipesPairs) do
-        pair.update(dt)
+        pair:update(dt)
     end
 
     for k, pair in pairs(pipesPairs) do
@@ -85,15 +85,16 @@ function love.update(dt)
             table.remove(pipesPairs, k)
         end
     end
+    love.keyboard.keysPressed = {}
 end
 
 function love.draw()
     push:start()
     love.graphics.draw(background, -backgroundScroll, 0)
+    bird:render()
     for k, pair in pairs(pipesPairs) do
         pair:render()
     end
     love.graphics.draw(ground, -groundScroll, V_HEIGHT - 16)
-    bird:render()
     push:finish()
 end
