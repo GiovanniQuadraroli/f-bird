@@ -1,7 +1,7 @@
 Bird = Class{}
 
-local GRAVITY = 4
-local JUMP_SPEED = -2
+local GRAVITY = 3
+local JUMP_SPEED = -1.5
 
 function Bird:init()
     self.image = love.graphics.newImage('Assets/Images/bird.png')
@@ -21,7 +21,7 @@ function Bird:collision(entity)
        entity.x + entity.width > self.x and
        entity.y < self.y + self.height and
        entity.y + entity.height > self.y then
-        return true
+        gStateMachine:change('title')
     else
         return false
     end

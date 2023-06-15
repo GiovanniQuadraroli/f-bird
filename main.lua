@@ -5,6 +5,13 @@ require 'Bird'
 require 'Pipe'
 require 'PipePair'
 
+require 'StateMachine'
+
+require 'states/BaseState'
+require 'states/PlayState'
+require 'states/TitleScreenState'
+
+
 WINDOW_HEIGHT = 720
 WINDOW_WIDTH = 1280
 
@@ -32,11 +39,24 @@ function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
     love.window.setTitle('F-Bird')
 
+    smallFont = love.graphics.newFont('Assets/Fonts/font.ttf',8)
+    mediumFont = love.graphics.newFont('Assets/Fonts/flappy.ttf',14)
+    flappyFont = love.graphics.newFont('Assets/Fonts/flappy.ttf',28)
+    hugeFont = love.graphics.newFont('Assets/Fonts/font.ttf',56)
+
+
     push:setupScreen(V_WIDTH, V_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         vsync = true,
         fullscreen = false,
         resizable = true
     })
+
+    gStateMachine = StateMachine {
+        ['title'] = function () return TitleScreenState() end,
+        ['play'] = function () return PlayState() end,            
+    }
+
+    gStateMachine:change('title')
 
     love.keyboard.keysPressed = {}
 end
@@ -67,36 +87,14 @@ end
 function love.update(dt)
     backgroundScroll = (backgroundScroll + BACKGROUND_SCROLL_SPEED * dt) % BACKGROUND_LOOPING_POINT
     groundScroll = (groundScroll + GROUND_SCROLL_SPEED * dt) % V_WIDTH
-    spawnTimer = spawnTimer + dt
-    if spawnTimer > 2 then
-        local y = math.max(-PIPE_HEIGHT + 10, math.min(lastY + math.random(-20, 20), V_HEIGHT - 90 - PIPE_HEIGHT))
-        lastY = y
-        table.insert(pipesPairs, PipePair(y))
-        spawnTimer = 0
-    end
-    bird:update(dt)
-
-    for k, pair in pairs(pipesPairs) do
-        bird:collision(pair.pipes['upper'])
-        bird:collision(pair.pipes['lower'])
-        pair:update(dt)
-    end
-
-    for k, pair in pairs(pipesPairs) do
-        if pair.remove then
-            table.remove(pipesPairs, k)
-        end
-    end
+    gStateMachine:update(dt)
     love.keyboard.keysPressed = {}
 end
 
 function love.draw()
     push:start()
     love.graphics.draw(background, -backgroundScroll, 0)
-    bird:render()
-    for k, pair in pairs(pipesPairs) do
-        pair:render()
-    end
+    gStateMachine:render()
     love.graphics.draw(ground, -groundScroll, V_HEIGHT - 16)
     push:finish()
 end
