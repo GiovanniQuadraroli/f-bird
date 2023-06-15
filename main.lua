@@ -77,6 +77,8 @@ function love.update(dt)
     bird:update(dt)
 
     for k, pair in pairs(pipesPairs) do
+        bird:collision(pair.pipes['upper'])
+        bird:collision(pair.pipes['lower'])
         pair:update(dt)
     end
 

@@ -10,10 +10,21 @@ function Bird:init()
 
     self.x = V_WIDTH / 2 - (self.width / 2)
     self.y = V_HEIGHT / 2 - (self.height / 2)
-    print("X: ",self.x ,"Y:", self.y)
 
     self.dy = 0
 
+end
+
+function Bird:collision(entity)
+    -- Check if the entity collides with the bird
+    if entity.x < self.x + self.width and
+       entity.x + entity.width > self.x and
+       entity.y < self.y + self.height and
+       entity.y + entity.height > self.y then
+        return true
+    else
+        return false
+    end
 end
 
 function Bird:update(dt)
