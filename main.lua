@@ -29,7 +29,7 @@ local ground = love.graphics.newImage('Assets/Images/ground.png')
 local groundScroll = 0
 local GROUND_SCROLL_SPEED = 60
 
-local scrolling = true
+scrolling = true
 
 function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
@@ -39,7 +39,19 @@ function love.load()
     mediumFont = love.graphics.newFont('Assets/Fonts/flappy.ttf', 14)
     flappyFont = love.graphics.newFont('Assets/Fonts/flappy.ttf', 28)
     hugeFont = love.graphics.newFont('Assets/Fonts/font.ttf', 56)
+    
 
+    sounds = {
+        ['jump'] = love.audio.newSource('Assets/Sounds/jump.wav','static'),
+        ['explosion'] = love.audio.newSource('Assets/Sounds/explosion.wav','static'),
+        ['hurt'] = love.audio.newSource('Assets/Sounds/hurt.wav','static'),
+        ['score'] = love.audio.newSource('Assets/Sounds/score.wav','static'),
+        ['music'] = love.audio.newSource('Assets/Sounds/marios_way.mp3','static'),
+        ['bip'] = love.audio.newSource('Assets/Sounds/bip.wav', 'static')
+    }
+
+    sounds['music']:setLooping(true)
+    sounds['music']:play()
 
     push:setupScreen(V_WIDTH, V_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         vsync = true,
