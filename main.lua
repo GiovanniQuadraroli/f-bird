@@ -11,6 +11,7 @@ require 'states/BaseState'
 require 'states/PlayState'
 require 'states/TitleScreenState'
 require 'states/ScoreState'
+require 'states/CountdownState'
 
 
 WINDOW_HEIGHT = 720
@@ -27,14 +28,6 @@ local BACKGROUND_LOOPING_POINT = 413
 local ground = love.graphics.newImage('Assets/Images/ground.png')
 local groundScroll = 0
 local GROUND_SCROLL_SPEED = 60
-
-local bird = Bird()
-
-local pipesPairs = {}
-
-local spawnTimer = 0
-
-local lastY = -PIPE_HEIGHT + math.random(80) + 20
 
 local scrolling = true
 
@@ -57,7 +50,8 @@ function love.load()
     gStateMachine = StateMachine {
         ['title'] = function() return TitleScreenState() end,
         ['play'] = function() return PlayState() end,
-        ['score'] = function() return ScoreState() end
+        ['score'] = function() return ScoreState() end,
+        ['count'] = function() return CountdownState() end
     }
 
     gStateMachine:change('title')
