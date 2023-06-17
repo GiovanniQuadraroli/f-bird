@@ -101,8 +101,10 @@ function love.keyboard.wasPressed(key)
 end
 
 function love.update(dt)
-    backgroundScroll = (backgroundScroll + BACKGROUND_SCROLL_SPEED * dt) % BACKGROUND_LOOPING_POINT
-    groundScroll = (groundScroll + GROUND_SCROLL_SPEED * dt) % V_WIDTH
+    if scrolling then
+        backgroundScroll = (backgroundScroll + BACKGROUND_SCROLL_SPEED * dt) % BACKGROUND_LOOPING_POINT
+        groundScroll = (groundScroll + GROUND_SCROLL_SPEED * dt) % V_WIDTH
+    end
     gStateMachine:update(dt)
     love.keyboard.keysPressed = {}
     love.mouse.buttonsPressed = {}
