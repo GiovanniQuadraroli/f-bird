@@ -6,6 +6,9 @@ PIPE_HEIGHT = 288
 
 BIRD_WIDTH = 38
 BIRD_HEIGHT = 24
+PAIR_SPAWN_TIME = 2
+
+paused = false
 
 function PlayState:init()
     self.bird = Bird()
@@ -21,12 +24,21 @@ end
 function PlayState:enter() end
 function PlayState:exit() end
 function PlayState:update(dt)
+    if love.keyboard.wasPressed('p') then
+        paused = not paused
+        scrolling = not scrolling
+    end
+    if paused then
+        return
+    end
     self.timer = self.timer + dt
-    if self.timer > 2 then
+    if self.timer > PAIR_SPAWN_TIME then
         local y = math.max(-PIPE_HEIGHT + 10, math.min(self.lastY + math.random(-20, 20), V_HEIGHT - 90 - PIPE_HEIGHT))
         self.lastY = y
         table.insert(self.pipePairs, PipePair(y))
         self.timer = 0
+        GAP_HEIGHT = math.random(56, 100)
+        PAIR_SPAWN_TIME = math.random(2,5)
     end
     self.bird:update(dt)
 
@@ -56,7 +68,7 @@ function PlayState:update(dt)
         end
     end
 
-    if self.bird.y > V_HEIGHT -15 then
+    if self.bird.y > V_HEIGHT - 15 then
         sounds['explosion']:play()
         sounds['hurt']:play()
         gStateMachine:change('score', {
@@ -73,12 +85,18 @@ function PlayState:render()
     end
     love.graphics.setFont(flappyFont)
     love.graphics.print('Score: ' .. tostring(self.score), 8, 8)
+    if paused then
+        love.graphics.setFont(mediumFont)
+    love.graphics.printf('GAME PAUSED PRESS P TO RESUME', 0, 100, V_WIDTH, 'center')
+    end
 end
 
 function PlayState:enter()
     scrolling = true
+    paused = false
 end
 
 function PlayState:exit()
     scrolling = false
+    paused = false
 end
