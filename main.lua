@@ -10,6 +10,7 @@ require 'StateMachine'
 require 'states/BaseState'
 require 'states/PlayState'
 require 'states/TitleScreenState'
+require 'states/ScoreState'
 
 
 WINDOW_HEIGHT = 720
@@ -35,14 +36,16 @@ local spawnTimer = 0
 
 local lastY = -PIPE_HEIGHT + math.random(80) + 20
 
+local scrolling = true
+
 function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
     love.window.setTitle('F-Bird')
 
-    smallFont = love.graphics.newFont('Assets/Fonts/font.ttf',8)
-    mediumFont = love.graphics.newFont('Assets/Fonts/flappy.ttf',14)
-    flappyFont = love.graphics.newFont('Assets/Fonts/flappy.ttf',28)
-    hugeFont = love.graphics.newFont('Assets/Fonts/font.ttf',56)
+    smallFont = love.graphics.newFont('Assets/Fonts/font.ttf', 8)
+    mediumFont = love.graphics.newFont('Assets/Fonts/flappy.ttf', 14)
+    flappyFont = love.graphics.newFont('Assets/Fonts/flappy.ttf', 28)
+    hugeFont = love.graphics.newFont('Assets/Fonts/font.ttf', 56)
 
 
     push:setupScreen(V_WIDTH, V_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
@@ -52,8 +55,9 @@ function love.load()
     })
 
     gStateMachine = StateMachine {
-        ['title'] = function () return TitleScreenState() end,
-        ['play'] = function () return PlayState() end,            
+        ['title'] = function() return TitleScreenState() end,
+        ['play'] = function() return PlayState() end,
+        ['score'] = function() return ScoreState() end
     }
 
     gStateMachine:change('title')
@@ -66,13 +70,11 @@ function love.resize(w, h)
 end
 
 function love.keypressed(key)
-
     love.keyboard.keysPressed[key] = true
 
     if key == 'escape' then
         love.event.quit()
     end
-
 end
 
 function love.keyboard.wasPressed(key)
@@ -81,7 +83,6 @@ function love.keyboard.wasPressed(key)
     else
         return false
     end
-
 end
 
 function love.update(dt)

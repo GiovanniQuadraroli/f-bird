@@ -21,7 +21,7 @@ function Bird:collision(entity)
        entity.x + entity.width > self.x and
        entity.y < self.y + self.height and
        entity.y + entity.height > self.y then
-        gStateMachine:change('title')
+        return true
     else
         return false
     end
